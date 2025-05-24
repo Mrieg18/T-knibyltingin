@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tæknibyltingin</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      height: 100%;
+    }
+    #player {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    #unmute-button {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      z-index: 1000;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <!-- YouTube IFrame -->
+  <div id="player"></div>
+
+  <!-- Unmute Button -->
+  <button id="unmute-button">Unmute Video</button>
+
+  <script>
+    // Redirect to your Google Site after the video ends
+    function redirect() {
+      window.location.href = "https://sites.google.com/gbrskoli.is/tknibyltingin/heim";
+    }
+
+    // Load the YouTube IFrame API
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    // Create the YouTube player
+    let player;
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        height: '100%',
+        width: '100%',
+        videoId: 'x4_9MhkVBCA', // Replace with your YouTube video ID
+        playerVars: {
+          autoplay: 1, // Autoplay the video
+          mute: 1, // Mute the video (required for autoplay)
+          controls: 0, // Hide controls
+          rel: 0, // Disable related videos
+          modestbranding: 1 // Hide YouTube logo
+        },
+        events: {
+          onReady: onPlayerReady,
+          onStateChange: onPlayerStateChange
+        }
+      });
+    }
+
+    // When the player is ready, start playing the video
+    function onPlayerReady(event) {
+      event.target.playVideo();
+    }
+
+    // Listen for changes in the video state
+    function onPlayerStateChange(event) {
+      // Redirect when the video ends
+      if (event.data === YT.PlayerState.ENDED) {
+        redirect();
+      }
+    }
+
+    // Unmute the video when the button is clicked
+    const unmuteButton = document.getElementById('unmute-button');
+    unmuteButton.addEventListener('click', () => {
+      if (player && player.unMute) {
+        player.unMute(); // Unmute the video
+        unmuteButton.style.display = 'none'; // Hide the button after unmuting
+      }
+    });
+  </script>
+</body>
+</html>
